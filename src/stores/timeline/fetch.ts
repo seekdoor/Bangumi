@@ -2,11 +2,12 @@
  * @Author: czy0729
  * @Date: 2023-04-25 16:29:42
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-02-01 10:00:13
+ * @Last Modified time: 2026-05-04 13:31:35
  */
 import { getTimestamp, queue } from '@utils'
 import { fetchHTML } from '@utils/fetch'
 import { fetchUserActive } from '@utils/fetch.p1'
+import { fetchCollectionV0, fetchUsersV0 } from '@utils/fetch.v0'
 import { H1, HOST, HTML_SAY, MODEL_TIMELINE_SCOPE } from '@constants'
 import systemStore from '../system'
 import userStore from '../user'
@@ -15,6 +16,7 @@ import Computed from './computed'
 import { DEFAULT_SCOPE, DEFAULT_TYPE } from './init'
 
 import type { Id, SubjectId, TimeLineScope, TimeLineType, UserId } from '@types'
+import type { CollectionTimelines } from './types'
 
 export default class Fetch extends Computed {
   /** 获取自己视角的时间胶囊 */
@@ -276,5 +278,77 @@ export default class Fetch extends Computed {
     }
 
     return updates
+  }
+
+  /** 获取用户的追踪收藏时间线 */
+  fetchCollectionTimelines = async (userId: UserId, refresh: boolean = false) => {
+    const STATE_KEY = 'collectionTimelines'
+    const ITEM_KEY = userId
+
+    try {
+      const data: CollectionTimelines = {
+        userId: 0,
+        avatar: '',
+        name: '',
+        map: {},
+        _loaded: 0
+      }
+
+      const users = await fetchUsersV0(userId, {
+        auth: false
+      })
+      if (users?.username && users?.avatar && users?.nickname) {
+        data.userId = users.username
+        data.avatar = users.avatar.large
+        data.name = users.nickname
+
+        const promises = [
+          fetchCollectionV0(data.userId, ['anime'], '3', {
+            auth: false
+          })
+        ]
+        this.log('fetchCollectionTimelines', data.userId, 'anime', '3')
+
+        // 如果 refresh 为 true，额外加入状态 '2' 的请求
+        if (refresh) {
+          promises.push(
+            fetchCollectionV0(data.userId, ['anime'], '2', {
+              auth: false
+            })
+          )
+          this.log('fetchCollectionTimelines', data.userId, 'anime', '2')
+        }
+
+        const results = await Promise.all(promises)
+
+        // 提取并合并所有返回的 list
+        const combinedList = []
+        results.forEach(res => {
+          if (res?.list) combinedList.push(...res.list)
+        })
+
+        if (combinedList.length) {
+          combinedList.forEach(item => {
+            data.map[item.subject_id] = {
+              eps: item.ep_status,
+              lasttouch: item.lasttouch
+            }
+          })
+          data._loaded = getTimestamp()
+
+          this.setState({
+            [STATE_KEY]: {
+              [ITEM_KEY]: data
+            }
+          })
+          this.save(STATE_KEY)
+          return true
+        }
+      }
+    } catch (error) {
+      this.error('fetchCollectionTimelines', error)
+    }
+
+    return false
   }
 }

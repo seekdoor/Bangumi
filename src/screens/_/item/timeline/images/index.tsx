@@ -17,8 +17,6 @@ import { matchSubjectId } from '../utils'
 import { styles } from './styles'
 
 function Images({ type, image, p3Text, p3Url, onNavigate }) {
-  if (image.length <= 1) return null
-
   const images = image.map((item: string, index: number) => {
     const isAvatar = !String(!!p3Url.length && p3Url[0]).includes('subject')
 

@@ -101,7 +101,7 @@ export default class Action extends Fetch {
     try {
       if (!dragging) {
         this.scrollToIndex({
-          animated: true,
+          animated: false,
           index: 0,
           viewOffset: 8000
         })
@@ -110,9 +110,11 @@ export default class Action extends Fetch {
       logger.error('Discovery', 'toggleDragging', error)
     }
 
-    this.setState({
-      dragging: !dragging
-    })
+    setTimeout(() => {
+      this.setState({
+        dragging: !dragging
+      })
+    }, 0)
   }
 
   /** 是否显示年鉴 2021 的动画 */

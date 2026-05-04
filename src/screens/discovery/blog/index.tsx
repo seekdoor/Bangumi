@@ -2,12 +2,12 @@
  * @Author: czy0729
  * @Date: 2020-04-04 16:02:05
  * @Last Modified by: czy0729
- * @Last Modified time: 2025-12-24 23:02:25
+ * @Last Modified time: 2026-04-30 04:30:03
  */
 import React from 'react'
+import { observer } from 'mobx-react'
 import { Component, Page } from '@components'
 import { StoreContext } from '@stores'
-import { useObserver } from '@utils/hooks'
 import Heatmaps from './component/heatmaps'
 import Tabs from './component/tabs'
 import Header from './header'
@@ -16,10 +16,10 @@ import { useDiscoveryBlogPage } from './hooks'
 import type { NavigationProps } from '@types'
 
 /** 全站日志 */
-const DiscoveryBlog = (props: NavigationProps) => {
+function DiscoveryBlog(props: NavigationProps) {
   const { id, $ } = useDiscoveryBlogPage(props)
 
-  return useObserver(() => (
+  return (
     <Component id='screen-discovery-blog'>
       <StoreContext.Provider value={id}>
         <Page loaded={$.state._loaded}>
@@ -29,7 +29,7 @@ const DiscoveryBlog = (props: NavigationProps) => {
         <Header />
       </StoreContext.Provider>
     </Component>
-  ))
+  )
 }
 
-export default DiscoveryBlog
+export default observer(DiscoveryBlog)

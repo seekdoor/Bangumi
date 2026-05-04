@@ -15,6 +15,7 @@ function Carousel({ props, epsGroup = [] }) {
   const styles = memoStyles()
 
   return (
+    // @ts-expect-error
     <AntCarousel
       style={styles.carousel}
       styles={paginationStyles}

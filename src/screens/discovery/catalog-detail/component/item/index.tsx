@@ -59,7 +59,7 @@ function Item({ index, item }: Props) {
 
   return (
     <ItemCollectionsGrid
-      event={EVENT}
+      index={index}
       id={id}
       num={$.gridNum}
       name={jp}
@@ -69,6 +69,7 @@ function Item({ index, item }: Props) {
       rank={item.rank}
       typeCn={item.type}
       collection={collection}
+      event={EVENT}
     />
   )
 }

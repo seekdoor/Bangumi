@@ -43,5 +43,6 @@ export const DEFAULT_PROPS = {
   mid: '' as Props['mid'],
   isRectangle: false as Props['isRectangle'],
   hideScore: undefined,
+  y: undefined as number,
   event: EVENT as Props['event']
 } as const

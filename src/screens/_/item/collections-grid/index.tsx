@@ -9,6 +9,7 @@ import { observer } from 'mobx-react'
 import { _ } from '@stores'
 import { x18 } from '@utils'
 import { r } from '@utils/dev'
+import { InView } from '../../base'
 import Item from './item'
 import { COMPONENT } from './ds'
 
@@ -19,6 +20,7 @@ export const ItemCollectionsGrid = observer(
   ({
     style,
     num = 3,
+    index,
     id,
     name,
     nameCn,
@@ -36,14 +38,17 @@ export const ItemCollectionsGrid = observer(
     mid,
     isRectangle,
     hideScore,
+    offset,
     event
   }: ItemCollectionsGridProps) => {
     r(COMPONENT)
 
+    const gridStyles = _.grid(num)
+
     return (
       <Item
         style={style}
-        gridStyles={_.grid(num)}
+        gridStyles={gridStyles}
         id={id}
         name={name}
         nameCn={nameCn}
@@ -61,6 +66,7 @@ export const ItemCollectionsGrid = observer(
         mid={mid}
         isRectangle={isRectangle}
         hideScore={hideScore}
+        y={index !== undefined ? InView.y(index, gridStyles.height + 36, offset, num) : undefined}
         event={event}
       />
     )

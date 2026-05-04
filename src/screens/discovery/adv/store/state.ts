@@ -6,12 +6,12 @@
  */
 import { observable } from 'mobx'
 import Store from '@utils/store'
-import { NAMESPACE, STATE } from './ds'
+import { EXCLUDE_STATE, NAMESPACE, STATE } from './ds'
 
 export default class State extends Store<typeof STATE> {
   state = observable(STATE)
 
   save = () => {
-    return this.saveStorage(NAMESPACE)
+    return this.saveStorage(NAMESPACE, EXCLUDE_STATE)
   }
 }

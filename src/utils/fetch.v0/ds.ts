@@ -30,3 +30,6 @@ export const API_ME = () => `${API_V0}/me` as const
 /** 登录用户条目章节收藏状态 */
 export const API_EPS_COLLECTION = (subjectId: SubjectId) =>
   `${API_V0}/users/-/collections/${subjectId}/episodes` as const
+
+/** 用户信息 */
+export const API_USERS = (userId: UserId) => `${API_V0}/users/${userId}` as const

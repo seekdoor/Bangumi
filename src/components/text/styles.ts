@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2022-05-01 11:46:46
  * @Last Modified by: czy0729
- * @Last Modified time: 2025-08-19 18:08:58
+ * @Last Modified time: 2026-04-30 05:02:40
  */
 import { _ } from '@stores'
 
@@ -23,6 +23,9 @@ export const memoStyles = _.memoStyles(() => ({
   },
   alignRight: {
     textAlign: 'right'
+  },
+  alignJustify: {
+    textAlign: 'justify'
   },
   shadow: {
     textShadowOffset: {

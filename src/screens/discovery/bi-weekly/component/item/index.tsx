@@ -2,67 +2,72 @@
  * @Author: czy0729
  * @Date: 2024-05-14 05:00:44
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-04-01 05:43:22
+ * @Last Modified time: 2026-04-30 04:40:16
  */
-import React from 'react'
+import React, { useCallback } from 'react'
+import { observer } from 'mobx-react'
 import { Flex, Image, Text, Touchable } from '@components'
 import { InView } from '@_'
 import { _ } from '@stores'
 import { t } from '@utils/fetch'
-import { useNavigation, useObserver } from '@utils/hooks'
+import { useNavigation } from '@utils/hooks'
 import { HOST_BGM_STATIC } from '@constants'
 import { COMPONENT } from './ds'
 import { styles } from './styles'
 
-function Item({ item, index }) {
+import type { RenderItem } from '@types'
+import type { DataItem } from '../../types'
+
+function Item({ item, index }: RenderItem<DataItem>) {
   const navigation = useNavigation(COMPONENT)
 
-  return useObserver(() => {
-    const isCatalog = item.title.includes('【目录】')
-    const width = isCatalog ? Math.floor(_.window.contentWidth * 0.8) : _.window.contentWidth
-    const height = isCatalog ? width : Math.floor(width * 1.41)
-    const descSize = item.desc ? 10 : 0
-    const titleSize = 15
+  // --- Data Logic ---
+  const isCatalog = item.title.includes('【目录】')
+  const width = isCatalog ? Math.floor(_.window.contentWidth * 0.8) : _.window.contentWidth
+  const height = isCatalog ? width : Math.floor(width * 1.41)
+  const descSize = item.desc ? 10 : 0
+  const titleSize = 15
 
-    return (
-      <Touchable
-        style={styles.item}
-        withoutFeedback
-        onPress={() => {
-          navigation.push('Topic', {
-            topicId: item.topicId,
-            _title: item.title,
-            _group: 'Bangumi半月刊',
-            _groupThumb: `${HOST_BGM_STATIC}/pic/icon/l/000/00/49/4986.jpg?r=1706848267`
-          })
+  // --- Handlers ---
+  const handlePress = useCallback(() => {
+    navigation.push('Topic', {
+      topicId: item.topicId,
+      _title: item.title,
+      _group: 'Bangumi半月刊',
+      _groupThumb: `${HOST_BGM_STATIC}/pic/icon/l/000/00/49/4986.jpg?r=1706848267`
+    })
 
-          t('半月刊.跳转', {
-            topicId: item.topicId
-          })
-        }}
-      >
-        <Flex justify='center'>
-          <InView y={(height + styles.item.marginBottom + descSize + titleSize) * index + 1}>
-            <Image
-              style={styles.cover}
-              width={width}
-              height={height}
-              src={item.cover}
-              radius={isCatalog ? _.radiusMd : 0}
-            />
-          </InView>
-        </Flex>
-        {!!item.desc && (
-          <Text style={styles.desc} type='sub' size={descSize} align='right'>
-            {item.desc}
-          </Text>
-        )}
-        <Text style={_.mt.md} size={titleSize} bold align='center'>
-          {item.title}
+    t('半月刊.跳转', {
+      topicId: item.topicId
+    })
+  }, [navigation, item])
+
+  // --- Render ---
+  return (
+    <Touchable style={styles.item} withoutFeedback onPress={handlePress}>
+      <Flex justify='center'>
+        <InView y={InView.y(index - 1, height + styles.item.marginBottom + descSize + titleSize)}>
+          <Image
+            style={styles.cover}
+            width={width}
+            height={height}
+            src={item.cover}
+            radius={isCatalog ? _.radiusMd : 0}
+          />
+        </InView>
+      </Flex>
+
+      {!!item.desc && (
+        <Text style={styles.desc} type='sub' size={descSize} align='right'>
+          {item.desc}
         </Text>
-      </Touchable>
-    )
-  })
+      )}
+
+      <Text style={_.mt.md} size={titleSize} bold align='center'>
+        {item.title}
+      </Text>
+    </Touchable>
+  )
 }
 
-export default Item
+export default observer(Item)

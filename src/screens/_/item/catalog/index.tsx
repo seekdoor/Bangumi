@@ -11,7 +11,7 @@ import { discoveryStore } from '@stores'
 import { HTMLDecode, removeHTMLTag } from '@utils'
 import { r } from '@utils/dev'
 import { DATA_CATALOG_TYPE_MAP, EVENT } from '@constants'
-import { computeInViewY, InView, PreventTouchPlaceholder } from '../../base'
+import { InView, PreventTouchPlaceholder } from '../../base'
 import Covers from './covers'
 import Desc from './desc'
 import Title from './title'
@@ -103,7 +103,7 @@ export const ItemCatalog = observer(
           })}
         >
           <Flex style={styles.wrap} align='start'>
-            <InView style={styles.inView} y={computeInViewY(index, ITEM_HEIGHT, 1)}>
+            <InView style={styles.inView} y={InView.y(index - 1, ITEM_HEIGHT)}>
               <Covers
                 title={titleValue}
                 list={list
@@ -117,6 +117,7 @@ export const ItemCatalog = observer(
                 typeCn={typeCn}
               />
             </InView>
+
             <Flex.Item>
               <Flex style={styles.content} direction='column' justify='between' align='start'>
                 <Title
@@ -127,6 +128,7 @@ export const ItemCatalog = observer(
                   filter={filter}
                 />
                 <Desc
+                  index={index}
                   userId={userIdValue}
                   avatar={avatarValue}
                   name={nameValue}
@@ -136,6 +138,7 @@ export const ItemCatalog = observer(
               </Flex>
             </Flex.Item>
           </Flex>
+
           {children}
         </Link>
 

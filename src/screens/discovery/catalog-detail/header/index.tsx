@@ -9,7 +9,7 @@ import { View } from 'react-native'
 import { observer } from 'mobx-react'
 import { Flex, Header as HeaderComp, HeaderV2Popover, Image, Text, UserStatus } from '@components'
 import { _, useStore } from '@stores'
-import { getCoverLarge, getSPAParams, open } from '@utils'
+import { getCoverLarge, getSPAParams, getVisualLength, open } from '@utils'
 import { t } from '@utils/fetch'
 import { HOST, TEXT_MENU_BROWSER, TEXT_MENU_SPA, URL_SPA } from '@constants'
 import IconFavor from '../component/icon-favor'
@@ -23,8 +23,10 @@ function Header() {
 
   const { avatar, userId, title } = $.detail
 
-  const elHeaderTitle = useMemo(
-    () => (
+  const elHeaderTitle = useMemo(() => {
+    const visualLength = getVisualLength(title)
+
+    return (
       <Flex style={styles.container}>
         {!!avatar && (
           <View style={_.mr.sm}>
@@ -39,12 +41,13 @@ function Header() {
           </View>
         )}
         <Flex.Item>
-          <Text numberOfLines={1}>{title}</Text>
+          <Text size={visualLength >= 14 ? 12 : 14} numberOfLines={2}>
+            {title}
+          </Text>
         </Flex.Item>
       </Flex>
-    ),
-    [avatar, title, userId]
-  )
+    )
+  }, [avatar, title, userId])
 
   const handleHeaderRight = useCallback(
     () => (

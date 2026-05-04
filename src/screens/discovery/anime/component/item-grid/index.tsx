@@ -21,11 +21,13 @@ function ItemGrid({ index, pickIndex }: Props) {
 
   const styles = memoStyles()
 
+  // --- Data Logic ---
   const subjectId = otaStore.animeSubjectId(pickIndex)
-  const { id, ageId, image, cn, jp, score, begin, rank } = otaStore.anime(subjectId)
+  const anime = otaStore.anime(subjectId)
   const num = _.portrait(3, 5)
 
-  if (!id) {
+  // --- Render ---
+  if (!anime?.id) {
     const gridStyles = _.grid(num)
 
     return (
@@ -43,10 +45,12 @@ function ItemGrid({ index, pickIndex }: Props) {
     )
   }
 
+  const { id, ageId, image, cn, jp, score, begin, rank } = anime
+
   return (
     <ItemCollectionsGrid
       style={(_.isPad || _.isLandscape) && !(index % num) && styles.left}
-      event={EVENT}
+      index={index}
       num={num}
       id={id}
       aid={ageId}
@@ -57,6 +61,8 @@ function ItemGrid({ index, pickIndex }: Props) {
       rank={rank}
       airtime={begin ? String(begin).slice(0, 7) : ''}
       collection={collectionStore.collect(id)}
+      offset={Math.floor(_.window.height * 0.4)}
+      event={EVENT}
     />
   )
 }

@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2024-05-25 08:00:44
  * @Last Modified by: czy0729
- * @Last Modified time: 2024-05-25 08:22:43
+ * @Last Modified time: 2026-04-30 05:26:08
  */
 import { collectionStore, tagStore } from '@stores'
 import { getTimestamp } from '@utils'
@@ -12,7 +12,7 @@ import { D7 } from '@constants'
 import Computed from './computed'
 
 /** 若更新过则不会再主动更新 */
-const THIRD_PARTY_UPDATED = []
+const THIRD_PARTY_UPDATED = new Map<string, true>()
 
 export default class Fetch extends Computed {
   /** 获取索引 */
@@ -92,13 +92,13 @@ export default class Fetch extends Computed {
 
   /** 上传预数据 */
   updateThirdParty = async () => {
-    if (THIRD_PARTY_UPDATED.includes(this.thirdPartyKey)) return
+    if (THIRD_PARTY_UPDATED.has(this.thirdPartyKey)) return
 
     setTimeout(() => {
       update(this.thirdPartyKey, {
         list: this.browser.list.map(({ collected, ...other }) => other)
       })
-      THIRD_PARTY_UPDATED.push(this.thirdPartyKey)
+      THIRD_PARTY_UPDATED.set(this.thirdPartyKey, true)
     }, 0)
   }
 }

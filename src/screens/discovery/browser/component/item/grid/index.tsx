@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2022-07-27 05:26:59
  * @Last Modified by: czy0729
- * @Last Modified time: 2025-10-11 16:02:22
+ * @Last Modified time: 2026-04-30 05:18:02
  */
 import React from 'react'
 import { observer } from 'mobx-react'
@@ -19,6 +19,7 @@ function Grid({ item, index, id, typeCn }) {
   return (
     <ItemCollectionsGrid
       style={(_.isPad || _.isLandscape) && !(index % numColumns) && _.container.left}
+      index={index}
       num={numColumns}
       collection={collectionStore.collect(id)}
       event={EVENT}

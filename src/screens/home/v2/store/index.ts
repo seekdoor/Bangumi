@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2023-02-27 20:26:27
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-04-17 11:29:54
+ * @Last Modified time: 2026-05-04 13:27:47
  */
 import * as Device from 'expo-device'
 import { _, systemStore, userStore } from '@stores'
@@ -46,7 +46,6 @@ export default class ScreenHomeV2 extends Action {
     }
 
     await this.initStore()
-    // this.fetchBangumiData()
 
     return true
   }
@@ -81,7 +80,10 @@ export default class ScreenHomeV2 extends Action {
 
     // 需要全刷新数据
     if (flag) {
-      if (await this.initQueue()) return true
+      if (await this.initQueue()) {
+        this.fetchCollectionTimelines()
+        return true
+      }
 
       // 可能是 access_token 过期了, 需要重新刷新 access_token
       if (userStore.isWebLogin) {
@@ -95,14 +97,20 @@ export default class ScreenHomeV2 extends Action {
             feedback()
             info('重新授权成功')
             t('其他.重新授权')
-            return this.initQueue()
+
+            const result = await this.initQueue()
+            this.fetchCollectionTimelines()
+            return result
           }
+
           reOauthing = false
         }
       }
     } else {
       // 不需要全刷新也至少刷新首屏
-      return this.initQueue(6)
+      const result = await this.fetchCollectionTimelines()
+      this.initQueue(6)
+      return result
     }
 
     return true
@@ -111,7 +119,9 @@ export default class ScreenHomeV2 extends Action {
   /** 初始化进度和条目等数据 */
   initQueue = async (count?: number) => {
     const data = await Promise.all([userStore.fetchCollection()])
-    if (data?.[0]?.list?.length) return this.fetchSubjectsQueue(data[0].list, count)
+    if (data?.[0]?.list?.length) {
+      return this.fetchSubjectsQueue(data[0].list, count)
+    }
 
     return false
   }
@@ -166,6 +176,7 @@ export default class ScreenHomeV2 extends Action {
           'homeTabs',
           'homeTopLeftCustom',
           'homeTopRightCustom',
+          'homeTopExtraCustom',
           'initialPage',
           'katakana',
           'live2DV2',

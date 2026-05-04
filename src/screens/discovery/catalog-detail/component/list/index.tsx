@@ -19,35 +19,36 @@ import type { Ctx } from '../../types'
 function List() {
   const { $ } = useStore<Ctx>(COMPONENT)
 
-  const elInfo = useMemo(() => <Info />, [])
-
-  const { type, isList, gridNum } = $
-
+  // --- Memos ---
   /** 计算列数：动画类型单独逻辑 */
-  const numColumns = useMemo(() => {
-    if (type !== '动画') return 1
-    return isList ? undefined : gridNum
-  }, [type, isList, gridNum])
+  const memoNumColumns = useMemo(() => {
+    if ($.type !== '动画') return 1
+    return $.isList ? undefined : $.gridNum
+  }, [$.type, $.isList, $.gridNum])
 
   /** 渲染函数根据 type 选择 */
-  const renderFn = useMemo(() => {
-    if (type === '小组') return renderTopicItem
-    if (type === '章节') return renderEpItem
-    if (type === '日志') return renderBlogItem
-    if (type === '角色' || type === '人物') return renderMonoItem
+  const memoRenderFn = useMemo(() => {
+    if ($.type === '小组') return renderTopicItem
+    if ($.type === '章节') return renderEpItem
+    if ($.type === '日志') return renderBlogItem
+    if ($.type === '角色' || $.type === '人物') return renderMonoItem
     return renderItem
-  }, [type])
+  }, [$.type])
 
+  // --- Memos (Elements) ---
+  const elInfo = useMemo(() => <Info />, [])
+
+  // --- Render ---
   return (
     <PaginationList2
-      key={`${$.state.layout}-${numColumns}`}
+      key={`${$.state.layout}|${memoNumColumns}`}
       keyExtractor={keyExtractor}
       contentContainerStyle={_.container.bottom}
-      numColumns={numColumns}
+      numColumns={memoNumColumns}
       data={$.data}
       limit={12}
       ListHeaderComponent={elInfo}
-      renderItem={renderFn as any}
+      renderItem={memoRenderFn as any}
       footerEmptyDataText={TEXT_18X}
       scrollEventThrottle={16}
       onScroll={$.onScroll}

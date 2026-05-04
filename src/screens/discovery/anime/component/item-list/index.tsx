@@ -4,14 +4,14 @@
  * @Last Modified by: czy0729
  * @Last Modified time: 2026-04-01 05:43:32
  */
-import React from 'react'
+import React, { useCallback } from 'react'
 import { observer } from 'mobx-react'
 import { Flex, Loading, Text, Touchable } from '@components'
 import { getCoverSrc } from '@components/cover/utils'
 import { Cover, InView, Manage, PreventTouchPlaceholder, Rank, Stars, Tags } from '@_'
 import { _, collectionStore, otaStore, uiStore, useStore } from '@stores'
 import { cnjp, desc, x18 } from '@utils'
-import { withT } from '@utils/fetch'
+import { t } from '@utils/fetch'
 import {
   HOST_BGM_STATIC,
   IMG_DEFAULT,
@@ -30,9 +30,45 @@ function ItemList({ index, pickIndex }: Props) {
   const { $, navigation } = useStore<Ctx>(COMPONENT)
 
   const styles = memoStyles()
+
+  // --- Data Logic ---
   const subjectId = otaStore.animeSubjectId(pickIndex)
   const anime = otaStore.anime(subjectId)
 
+  // --- Handlers ---
+  const handlePress = useCallback(() => {
+    if (!anime) return
+
+    navigation.push('Subject', {
+      subjectId: anime.id,
+      _cn: anime.cn,
+      _image: getCoverSrc(
+        anime.image ? `${HOST_BGM_STATIC}/pic/cover/m/${anime.image}.jpg` : IMG_DEFAULT,
+        IMG_WIDTH_LG
+      ),
+      _aid: anime.ageId
+    })
+
+    t('Anime.跳转', { subjectId: anime?.id })
+  }, [anime, navigation])
+
+  const handleManage = useCallback(() => {
+    if (!anime) return
+
+    uiStore.showManageModal(
+      {
+        subjectId: anime.id,
+        title: cnjp(anime.cn, anime.jp),
+        desc: cnjp(anime.jp, anime.cn),
+        status: MODEL_COLLECTION_STATUS.getValue<CollectionStatus>(
+          collectionStore.collect(anime.id)
+        )
+      },
+      '找番剧'
+    )
+  }, [anime])
+
+  // --- Render ---
   if (!anime?.id) {
     return (
       <Flex style={styles.loading} justify='center'>
@@ -43,7 +79,6 @@ function ItemList({ index, pickIndex }: Props) {
 
   const {
     id,
-    ageId,
     image,
     cn,
     jp,
@@ -78,36 +113,11 @@ function ItemList({ index, pickIndex }: Props) {
 
   const collection = collectionStore.collect(id)
 
-  const handlePress = withT(
-    () => {
-      navigation.push('Subject', {
-        subjectId: id,
-        _cn: cn,
-        _image: getCoverSrc(cover, IMG_WIDTH_LG),
-        _aid: ageId
-      })
-    },
-    'Anime.跳转',
-    { subjectId: id }
-  )
-
-  const handleManage = () => {
-    uiStore.showManageModal(
-      {
-        subjectId: id,
-        title,
-        desc: cnjp(jp, cn),
-        status: MODEL_COLLECTION_STATUS.getValue<CollectionStatus>(collection)
-      },
-      '找番剧'
-    )
-  }
-
   return (
     <>
       <Touchable style={styles.container} animate onPress={handlePress}>
         <Flex style={styles.wrap} align='start'>
-          <InView style={styles.inView} y={_.window.height * 0.4 + IMG_HEIGHT_LG * index}>
+          <InView style={styles.inView} y={InView.y(index, IMG_HEIGHT_LG, _.window.height * 0.4)}>
             <Cover src={cover} width={IMG_WIDTH_LG} height={IMG_HEIGHT_LG} radius cdn={!x18(id)} />
           </InView>
 
@@ -144,6 +154,7 @@ function ItemList({ index, pickIndex }: Props) {
           </Flex.Item>
         </Flex>
       </Touchable>
+
       <PreventTouchPlaceholder />
     </>
   )

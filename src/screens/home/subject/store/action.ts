@@ -752,14 +752,11 @@ export default class Action extends Fetch {
   }
 
   /** 取消追踪特定用户收藏相关信息 */
-  onCancelTrackUsersCollection = (
-    _title: string,
-    userData: {
-      avatar: string
-      userId: UserId
-      userName: string
-    }
-  ) => {
+  onCancelTrackUsersCollection = (userData: {
+    avatar: string
+    userId: UserId
+    userName: string
+  }) => {
     if (this.type && userData?.userId) {
       const { userId } = userData || {}
       systemStore.cancelTrackUsersCollection(userId, this.subjectTypeValue)

@@ -32,6 +32,7 @@ export default class ScreenAnime extends Action {
     if (_tags.length) this.initQuery(typeof _tags === 'string' ? [_tags] : _tags)
 
     this.search()
+
     setTimeout(() => {
       this.setState({
         _loaded: true
@@ -40,6 +41,7 @@ export default class ScreenAnime extends Action {
   }
 
   unmount = () => {
+    this.scrollToOffset = null
     this.setState(RESET_STATE)
   }
 }

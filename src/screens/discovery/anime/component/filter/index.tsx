@@ -9,7 +9,7 @@ import { observer } from 'mobx-react'
 import { Filter as FilterComp } from '@_'
 import { r } from '@utils/dev'
 import { TEXT_UPDATE_ANIME } from '@constants'
-import { filterDS } from '../../ds'
+import { FILTER_DS } from '../../ds'
 import { COMPONENT, TEXT_INFORMATION } from './ds'
 
 function Filter() {
@@ -17,7 +17,7 @@ function Filter() {
 
   return (
     <FilterComp
-      filterDS={filterDS}
+      filterDS={FILTER_DS}
       lastUpdate={TEXT_UPDATE_ANIME.slice(0, 7)}
       information={TEXT_INFORMATION}
     />

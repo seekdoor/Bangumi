@@ -2,11 +2,11 @@
  * @Author: czy0729
  * @Date: 2022-05-01 12:03:30
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-01-15 12:30:27
+ * @Last Modified time: 2026-04-30 05:05:08
  */
 import { Text, TextInput } from 'react-native'
 import { _ } from '@stores'
-import { setDefaultProps } from '@utils'
+import { setDefaultProps, titleCase } from '@utils'
 import { s2t } from '@utils/thirdParty/open-cc'
 import { spacing } from '@utils/thirdParty/pangu-lite'
 import { IOS, WEB } from '@constants'
@@ -94,8 +94,7 @@ export function getTextStyle({
     }
   }
 
-  if (align && align !== 'left')
-    textStyle.push(align === 'right' ? styles.alignRight : styles.alignCenter)
+  if (align && align !== 'left') textStyle.push(styles[`align${titleCase(align)}`])
   if (shadow) textStyle.push(styles.shadow)
   if (shrink) textStyle.push(styles.shrink)
   if (noWrap) textStyle.push(styles.noWrap)

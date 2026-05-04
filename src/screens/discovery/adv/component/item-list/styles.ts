@@ -5,7 +5,7 @@
  * @Last Modified time: 2023-03-28 14:56:15
  */
 import { _ } from '@stores'
-import { IMG_HEIGHT_LG } from '@constants'
+import { IMG_HEIGHT_LG, IMG_WIDTH_LG } from '@constants'
 import { THUMB_HEIGHT } from './ds'
 
 export const memoStyles = _.memoStyles(() => ({
@@ -14,6 +14,10 @@ export const memoStyles = _.memoStyles(() => ({
   },
   wrap: {
     paddingVertical: _.md
+  },
+  inView: {
+    minWidth: IMG_WIDTH_LG,
+    minHeight: IMG_HEIGHT_LG
   },
   content: {
     flex: 1,

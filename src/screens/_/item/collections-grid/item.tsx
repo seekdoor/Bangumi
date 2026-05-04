@@ -4,14 +4,14 @@
  * @Last Modified by: czy0729
  * @Last Modified time: 2025-10-30 00:08:14
  */
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Component, Cover, Flex, Link, Text } from '@components'
 import { getCoverSrc } from '@components/cover/utils'
 import { _ } from '@stores'
-import { cnjp, stl } from '@utils'
+import { cnjp, getVisualLength, stl } from '@utils'
 import { memo } from '@utils/decorators'
 import { EVENT } from '@constants'
-import { Rank, Stars } from '../../base'
+import { InView, Rank, Stars } from '../../base'
 import Collection from './collection'
 import { COMPONENT_MAIN, DEFAULT_PROPS, HIT_SLOP } from './ds'
 
@@ -38,13 +38,21 @@ const Item = memo(
     mid = '',
     isRectangle = false,
     hideScore,
+    y,
     event = EVENT
   }) => {
-    const { width } = gridStyles
     const subjectId = String(id).replace('/subject/', '') as SubjectId
 
+    const { width } = gridStyles
+    const height = isRectangle ? width : gridStyles.height
+    const elCover = useMemo(
+      () => <Cover size={width} height={height} src={cover} radius type={typeCn} cdn={cdn} />,
+      [cdn, cover, height, typeCn, width]
+    )
+
     const text = cnjp(nameCn, name)
-    const textSize = text.length >= 36 ? 10 : text.length >= 24 ? 11 : 12
+    const visualLength = getVisualLength(text)
+    const textSize = visualLength >= 32 ? 10 : visualLength >= 20 ? 11 : 12
 
     return (
       <Component
@@ -81,14 +89,20 @@ const Item = memo(
           })}
           hitSlop={HIT_SLOP}
         >
-          <Cover
-            size={width}
-            height={isRectangle ? width : gridStyles.height}
-            src={cover}
-            radius
-            type={typeCn}
-            cdn={cdn}
-          />
+          {y !== undefined ? (
+            <InView
+              style={{
+                minWidth: width,
+                minHeight: height
+              }}
+              y={y}
+            >
+              {elCover}
+            </InView>
+          ) : (
+            elCover
+          )}
+
           <Text
             style={_.mt.sm}
             size={textSize}
@@ -99,7 +113,9 @@ const Item = memo(
           >
             {text}
           </Text>
+
           <Collection collection={collection} typeCn={typeCn} airtime={airtime} />
+
           {!!sub && (
             <Text
               style={_.mt.xs}
@@ -113,6 +129,7 @@ const Item = memo(
               {sub}
             </Text>
           )}
+
           {!!score && (
             <Flex style={_.mt.sm} justify='center'>
               <Rank style={_.mr.xs} value={rank} size={9} />

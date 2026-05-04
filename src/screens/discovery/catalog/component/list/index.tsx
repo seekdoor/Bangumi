@@ -17,15 +17,19 @@ import { COMPONENT, EVENT } from './ds'
 import { styles } from './styles'
 
 import type { Ctx } from '../../types'
+
 function List() {
   const { $ } = useStore<Ctx>(COMPONENT)
 
+  // --- Data Logic ---
+  const { fixedFilter, fixedPagination, show, filterKey } = $.state
+  const { list, _loaded: isLoaded } = $.catalog
+
+  // --- Memos (Elements) ---
   const elToolBar = useMemo(() => <ToolBar />, [])
   const elPagination = useMemo(() => <Pagination />, [])
 
-  const { fixedFilter, fixedPagination, show } = $.state
-  const { list, _loaded } = $.catalog
-
+  // --- Render ---
   return (
     <>
       {fixedFilter && elToolBar}
@@ -33,7 +37,7 @@ function List() {
         {!fixedFilter && elToolBar}
         <View style={styles.container}>
           {show &&
-            (!!_loaded && !list.length ? (
+            (!!isLoaded && !list.length ? (
               <Empty text='到底了' />
             ) : (
               list
@@ -50,7 +54,7 @@ function List() {
                     event={EVENT}
                     {...item}
                     index={index}
-                    filter={$.state.filterKey === '不限' ? '' : $.state.filterKey}
+                    filter={filterKey === '不限' ? '' : filterKey}
                   />
                 ))
             ))}

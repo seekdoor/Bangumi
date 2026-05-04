@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2020-03-22 15:37:07
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-03-20 04:41:57
+ * @Last Modified time: 2026-04-30 05:09:51
  */
 import React from 'react'
 import { View } from 'react-native'
@@ -110,7 +110,7 @@ export const ItemBlog = observer(
 
               <Link {...linkProps}>
                 <Text style={styles.content} size={13} lineHeight={15} numberOfLines={4}>
-                  {HTMLDecode(content)}
+                  {HTMLDecode(content).replace(/[ \u3000]+/g, ' ')}
                 </Text>
               </Link>
 

@@ -9,6 +9,7 @@ import type { EventType, Id, SubjectTypeCn, WithViewStyles } from '@types'
 
 export type Props = WithViewStyles<{
   num?: number
+  index: number
   id?: Id
   name?: string
   nameCn?: string
@@ -28,5 +29,6 @@ export type Props = WithViewStyles<{
   mid?: string | number
   isRectangle?: boolean
   hideScore?: boolean
+  offset?: number
   event?: EventType
 }>

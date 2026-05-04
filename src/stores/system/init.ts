@@ -383,20 +383,23 @@ export const INIT_SETTING = {
   /** 放送提醒菜单增加导出 ICS */
   exportICS: false,
 
-  /** 追踪用户动画评论 ids */
+  /** 追踪用户动画评论 IDs */
   commentAnime: [] as TrackIds,
 
-  /** 追踪用户书籍评论 ids */
+  /** 追踪用户书籍评论 IDs */
   commentBook: [] as TrackIds,
 
-  /** 追踪用户游戏评论 ids */
+  /** 追踪用户游戏评论 IDs */
   commentGame: [] as TrackIds,
 
-  /** 追踪用户音乐评论 ids */
+  /** 追踪用户音乐评论 IDs */
   commentMusic: [] as TrackIds,
 
-  /** 追踪用户三次元评论 ids */
+  /** 追踪用户三次元评论 IDs */
   commentReal: [] as TrackIds,
+
+  /** 追踪用户收藏时间线 IDs */
+  collectionTimelines: [] as TrackIds,
 
   /** 是否启用 webhook */
   webhook: false,

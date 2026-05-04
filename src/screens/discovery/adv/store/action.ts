@@ -1,12 +1,15 @@
-import { otaStore } from '@stores'
 /*
  * @Author: czy0729
  * @Date: 2024-07-14 15:53:46
  * @Last Modified by: czy0729
  * @Last Modified time: 2024-07-14 16:05:16
  */
+import { otaStore } from '@stores'
+import { updateVisibleBottom } from '@utils'
 import { t } from '@utils/fetch'
 import Fetch from './fetch'
+
+import type { ScrollToOffset } from '@components'
 
 export default class Action extends Fetch {
   /** 筛选选择 */
@@ -29,14 +32,17 @@ export default class Action extends Fetch {
     }, 0)
   }
 
-  scrollToOffset = null
+  scrollToOffset: ScrollToOffset = null
+
+  forwardRef = (ref: { scrollToOffset: ScrollToOffset }) => {
+    if (ref?.scrollToOffset) this.scrollToOffset = ref.scrollToOffset
+  }
 
   /** 到顶 */
   scrollToTop = () => {
     if (typeof this.scrollToOffset === 'function') {
       this.scrollToOffset({
-        x: 0,
-        y: 0,
+        offset: 0,
         animated: true
       })
 
@@ -75,4 +81,7 @@ export default class Action extends Fetch {
 
     return otaStore.onADVPage(pageData)
   }
+
+  /** 更新可视范围底部 y */
+  onScroll = updateVisibleBottom.bind(this)
 }

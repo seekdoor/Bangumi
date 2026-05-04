@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2019-06-08 04:35:20
  * @Last Modified by: czy0729
- * @Last Modified time: 2024-11-17 06:58:30
+ * @Last Modified time: 2026-04-30 05:24:14
  */
 import React from 'react'
 import { observer } from 'mobx-react'
@@ -21,7 +21,7 @@ function ToolBar() {
   const { $ } = useStore<Ctx>(COMPONENT)
 
   return (
-    <ToolBarComp style={!$.isList && _.mb.xs}>
+    <ToolBarComp style={!$.isList && _.mb.sm}>
       <Filter />
       <Back />
       <Year />

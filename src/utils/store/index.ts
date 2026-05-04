@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2019-02-26 01:18:15
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-03-17 20:15:14
+ * @Last Modified time: 2026-04-30 05:38:04
  */
 import { action, configure, extendObservable, isObservableArray, toJS } from 'mobx'
 import isEqual from 'lodash.isequal'
@@ -300,7 +300,7 @@ export default class Store<
   }
 
   /**
-   * 读取本地缓存 (若已读取则不再次读取)
+   * 读取本地缓存 (若已读取则不再次读取，切记第二次返回一定是空对象)
    * @param {*} namespace 空间名
    * */
   getStorageOnce = async <State extends object, ExcludeState extends object = {}>(

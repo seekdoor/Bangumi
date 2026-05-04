@@ -344,10 +344,7 @@ export default class Fetch extends Computed {
               return
             }
 
-            const collection = await fetchCollectionSingleV0({
-              subjectId,
-              userId: userStore.myId
-            })
+            const collection = await fetchCollectionSingleV0(userStore.myId, subjectId)
             if (collection) results.push(collection)
             lastFetchMS[subjectId] = getTimestamp()
           })

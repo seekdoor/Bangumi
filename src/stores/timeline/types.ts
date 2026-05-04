@@ -73,3 +73,18 @@ export type Say = ListEmpty<SayItem>
 
 /** 隐藏 TA */
 export type Hidden = Record<UserId, number>
+
+/** 某用户的追踪收藏时间线 */
+export type CollectionTimelines = {
+  userId: UserId
+  avatar: string
+  name: string
+  map: Record<
+    SubjectId,
+    {
+      eps: number
+      lasttouch: number
+    }
+  >
+  _loaded: Loaded
+}

@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2022-07-16 07:29:32
  * @Last Modified by: czy0729
- * @Last Modified time: 2022-07-23 00:20:09
+ * @Last Modified time: 2026-05-04 13:18:25
  */
 import type {
   Collection as BaseCollection,
@@ -13,7 +13,8 @@ import type {
   Rating,
   Subject as BaseSubject,
   SubjectId,
-  SubjectTypeValue
+  SubjectTypeValue,
+  UserId
 } from '@types'
 
 export type Config = {
@@ -25,6 +26,12 @@ export type Config = {
     'Content-Type'?: string
   }
   data?: string
+}
+
+export type RequestConfig = {
+  timeout?: number
+  auth?: boolean
+  onError?: (ex: Error) => any
 }
 
 type Subject = {
@@ -84,3 +91,17 @@ export type UserCollectionItem = {
 }
 
 export type UserCollection = ListEmpty<DeepPartial<UserCollectionItem>>
+
+export type Users = {
+  avatar: {
+    large: string
+    medium: string
+    small: string
+  }
+  id: number
+  nickname: string
+  sign: string
+  url: string
+  user_group: number
+  username: UserId
+}

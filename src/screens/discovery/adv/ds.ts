@@ -11,11 +11,11 @@ export const COMPONENT = 'ADV'
 
 export const ADVANCE_LIMIT = 60
 
-// 类型分组
+/** 类型分组 */
 const ADV_DEV_GROUP = [[], []]
 ADV_DEV.forEach((item, index) => ADV_DEV_GROUP[index % 2 ? 1 : 0].push(item))
 
-export const filterDS = [
+export const FILTER_DS = [
   {
     title: '首字　',
     type: 'first',

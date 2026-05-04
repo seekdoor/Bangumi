@@ -182,10 +182,7 @@ export default class Action extends Fetch {
           },
           async () => {
             if (this.showFailNotice) {
-              const collection = await fetchCollectionSingleV0({
-                subjectId,
-                userId: userStore.myId
-              })
+              const collection = await fetchCollectionSingleV0(userStore.myId, subjectId)
 
               // 更新后状态与提交的不一致
               if (collection?.type && Number(collection.type) !== Number(interest)) {

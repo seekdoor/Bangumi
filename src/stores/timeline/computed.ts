@@ -80,6 +80,29 @@ export default class Computed extends State implements StoreConstructor<typeof S
     return this.state[STATE_KEY]
   }
 
+  /** 多个用户的追踪收藏时间线 */
+  collectionTimelines(userIds: UserId[] = [], subjectId: SubjectId) {
+    const STATE_KEY = 'collectionTimelines'
+    this.init(STATE_KEY, true)
+
+    return computed(() => {
+      return userIds
+        .map(userId => {
+          const data = this.state[STATE_KEY][userId]
+          if (data?.map?.[subjectId]) {
+            const { map, ...other } = data
+            return {
+              ...other,
+              userId,
+              sort: map[subjectId]
+            }
+          }
+          return null
+        })
+        .filter(item => item !== null)
+    }).get()
+  }
+
   /** ==================== computed ==================== */
   /** 时间胶囊回复表情 */
   likesList(id: Id) {

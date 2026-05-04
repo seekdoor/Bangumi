@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2024-05-25 08:09:39
  * @Last Modified by: czy0729
- * @Last Modified time: 2024-11-25 21:04:13
+ * @Last Modified time: 2026-04-30 05:29:04
  */
 import { feedback, info, updateVisibleBottom } from '@utils'
 import { t } from '@utils/fetch'
@@ -19,10 +19,10 @@ import { EXCLUDE_STATE } from './ds'
 import type { ScrollToOffset } from '@components'
 
 export default class Action extends Fetch {
-  scrollToOffset: ScrollToOffset
+  scrollToOffset: ScrollToOffset = null
 
-  forwardRef = (ref: any) => {
-    if (ref) this.scrollToOffset = ref.scrollToOffset
+  forwardRef = (ref: { scrollToOffset: ScrollToOffset }) => {
+    if (ref?.scrollToOffset) this.scrollToOffset = ref.scrollToOffset
   }
 
   /** 隐藏后延迟显示列表 (用于重置滚动位置) */

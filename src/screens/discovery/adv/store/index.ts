@@ -7,15 +7,18 @@
 import { collectionStore } from '@stores'
 import { init } from '@utils/subject/adv'
 import Action from './action'
-import { NAMESPACE, STATE } from './ds'
+import { EXCLUDE_STATE, NAMESPACE, RESET_STATE } from './ds'
+
+import type { STATE } from './ds'
 
 let _loaded = false
 
 export default class ScreenADV extends Action {
   init = async () => {
-    const storageData = await this.getStorageOnce<typeof STATE>(NAMESPACE)
+    const storageData = await this.getStorageOnce<typeof STATE, typeof EXCLUDE_STATE>(NAMESPACE)
     this.setState({
       ...storageData,
+      ...EXCLUDE_STATE,
       _loaded
     })
     if (!_loaded) await init()
@@ -24,10 +27,16 @@ export default class ScreenADV extends Action {
     collectionStore.fetchUserCollectionsQueue(false, '游戏')
 
     this.search()
+
     setTimeout(() => {
       this.setState({
         _loaded: true
       })
     }, 120)
+  }
+
+  unmount = () => {
+    this.scrollToOffset = null
+    this.setState(RESET_STATE)
   }
 }

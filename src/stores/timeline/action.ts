@@ -16,6 +16,7 @@ import Fetch from './fetch'
 import { parseRelativeTimeToTs } from './utils'
 
 import type { Fn, Id, TimeLineScope, TimeLineType, UserId } from '@types'
+
 export default class Action extends Fetch {
   /** 更新隐藏某人动态的截止时间 */
   updateHidden = (hash?: UserId, day: number = 1) => {

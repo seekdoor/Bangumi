@@ -2,9 +2,9 @@
  * @Author: czy0729
  * @Date: 2023-02-27 20:20:48
  * @Last Modified by: czy0729
- * @Last Modified time: 2025-03-25 20:56:21
+ * @Last Modified time: 2026-05-04 12:53:16
  */
-import { collectionStore, subjectStore, userStore } from '@stores'
+import { collectionStore, subjectStore, systemStore, timelineStore, userStore } from '@stores'
 import { getTimestamp, queue } from '@utils'
 import { decode } from '@utils/protobuf'
 import {
@@ -114,6 +114,25 @@ export default class Fetch extends Computed {
         tag: ''
       },
       refresh
+    )
+  }
+
+  private _fetchedCollectionTimelines = false
+
+  /** 追踪特定用户收藏时间线 */
+  fetchCollectionTimelines = () => {
+    if (!this.isLogin) return false
+
+    if (this._fetchedCollectionTimelines) return true
+
+    const { collectionTimelines } = systemStore.setting
+    if (!collectionTimelines?.length) return false
+
+    this._fetchedCollectionTimelines = true
+
+    return queue(
+      collectionTimelines.map(userName => () => timelineStore.fetchCollectionTimelines(userName)),
+      1
     )
   }
 }

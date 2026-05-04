@@ -109,9 +109,7 @@ export default class Fetch extends Computed {
 
   /** 获取在看收藏 (新 API, 取代 userCollection) */
   fetchCollection = async (userId: UserId = this.myId) => {
-    const collection = await fetchCollectionV0({
-      userId
-    })
+    const collection = await fetchCollectionV0(userId)
 
     // 这样可能是 access_token 过期了, 需要主动刷新 access_token
     if (!collection.list.length && this.collection.list.length >= 2) return null
@@ -135,10 +133,7 @@ export default class Fetch extends Computed {
      * */
     fixedEpStatus: boolean = false
   ) => {
-    const data = await fetchCollectionSingleV0({
-      userId,
-      subjectId
-    })
+    const data = await fetchCollectionSingleV0(userId, subjectId)
     if (!data) return false
 
     if (fixedEpStatus && data?.ep_status === 0) data.ep_status = 1
@@ -207,9 +202,7 @@ export default class Fetch extends Computed {
 
   /** 获取登录用户条目章节收藏状态 */
   fetchUserProgressV0 = async (subjectId: SubjectId) => {
-    const data: any = await fetchUserProgressV0({
-      subjectId
-    })
+    const data: any = await fetchUserProgressV0(subjectId)
 
     const userProgress = {
       _loaded: getTimestamp()

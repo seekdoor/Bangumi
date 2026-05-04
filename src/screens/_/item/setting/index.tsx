@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2019-05-24 02:02:43
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-03-20 05:58:58
+ * @Last Modified time: 2026-04-30 05:58:32
  */
 import React from 'react'
 import { View } from 'react-native'
@@ -56,7 +56,7 @@ export const ItemSetting = observer(
               </Highlight>
               {!!thumb && (
                 <Touchable
-                  style={_.ml.xs}
+                  style={styles.touch}
                   onPress={() => {
                     if (WEB) {
                       const navigation = navigationReference()

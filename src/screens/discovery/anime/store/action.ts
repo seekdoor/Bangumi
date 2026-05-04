@@ -7,9 +7,11 @@
 import { collectionStore, otaStore } from '@stores'
 import { updateVisibleBottom } from '@utils'
 import { scrollToTop } from '@utils/dom'
-import { t, withT } from '@utils/fetch'
+import { t } from '@utils/fetch'
 import { WEB } from '@constants'
 import Fetch from './fetch'
+
+import type { ScrollToOffset } from '@components'
 
 export default class Action extends Fetch {
   /** 初始化查询配置 */
@@ -70,14 +72,16 @@ export default class Action extends Fetch {
     }, 0)
   }
 
-  scrollToOffset: any = null
+  scrollToOffset: ScrollToOffset = null
 
-  forwardRef = (ref: { scrollToOffset: any }) => {
+  forwardRef = (ref: { scrollToOffset: ScrollToOffset }) => {
     if (ref?.scrollToOffset) this.scrollToOffset = ref.scrollToOffset
   }
 
   /** 到顶 */
-  scrollToTop = withT(() => {
+  scrollToTop = () => {
+    t('Anime.到顶')
+
     if (WEB) {
       scrollToTop()
       return
@@ -85,12 +89,11 @@ export default class Action extends Fetch {
 
     if (typeof this.scrollToOffset === 'function') {
       this.scrollToOffset({
-        x: 0,
-        y: 0,
+        offset: 0,
         animated: true
       })
     }
-  }, 'Anime.到顶')
+  }
 
   /** 切换布局 */
   switchLayout = () => {

@@ -5,7 +5,7 @@
  * @Last Modified time: 2024-11-23 14:51:55
  */
 import type { PropsWithChildren } from 'react'
-import type { ColorValue, WithViewStyles } from '@types'
+import type { ColorValue, DeepPartial, WithViewStyles } from '@types'
 
 export type Props = PropsWithChildren<
   WithViewStyles<{
@@ -25,3 +25,11 @@ export type Props = PropsWithChildren<
     statusBarEvent?: boolean
   }>
 >
+
+export type Ctx = DeepPartial<{
+  $: {
+    state: {
+      visibleBottom: number
+    }
+  }
+}>

@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2022-08-31 14:21:17
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-03-19 15:42:28
+ * @Last Modified time: 2026-05-02 11:02:30
  */
 import React, { useCallback, useMemo, useState } from 'react'
 import { View } from 'react-native'
@@ -38,9 +38,11 @@ export default memo(
     onFliped = FROZEN_FN,
     onSelect = FROZEN_FN
   }: Props) => {
+    // --- Data Logic ---
     const [width, setWidth] = useState(layoutWidth - marginRight)
 
-    const btnStyle = useMemo(() => {
+    // --- Memos ---
+    const memoBtnStyle = useMemo(() => {
       if (WSA || _.isPad) {
         return {
           width: 40,
@@ -54,32 +56,34 @@ export default memo(
       const marginNumbers = numbersOfLine - 1
       const marginSum = width * marginPercent
       const widthSum = width - marginSum
-      const _width = widthSum / numbersOfLine
-      const _margin = marginSum / marginNumbers
+      const itemWidth = widthSum / numbersOfLine
+      const itemMargin = marginSum / marginNumbers
+
       return {
-        width: grid ? Math.floor(_width) : _width,
-        margin: grid ? Math.floor(_margin) : _margin
+        width: grid ? Math.floor(itemWidth) : itemWidth,
+        margin: grid ? Math.floor(itemMargin) : itemMargin
       }
     }, [width, numbersOfLine, grid])
 
-    const passProps = useMemo(() => {
-      const { width, margin } = btnStyle
+    const memoPassProps = useMemo(() => {
+      const { width: btnWidth, margin: btnMargin } = memoBtnStyle
+
       return {
         advance,
         canPlay,
         login,
-        margin,
+        margin: btnMargin,
         numbersOfLine,
         subjectId,
         userProgress,
-        width,
+        width: btnWidth,
         flip,
         onFliped,
         onSelect
       }
     }, [
       advance,
-      btnStyle,
+      memoBtnStyle,
       canPlay,
       login,
       numbersOfLine,
@@ -90,12 +94,14 @@ export default memo(
       onSelect
     ])
 
-    const pages = useMemo(() => {
-      let _eps = eps || []
-      const hasSp = _eps.some(item => item.type == 1) // 是否有 SP
+    const memoPages = useMemo(() => {
+      let epsData = eps || []
+
+      /** 是否有 SP */
+      const hasSp = epsData.some(item => item.type == 1)
       if (hasSp) {
         // 保证 SP 排在普通章节后面
-        _eps = _eps
+        epsData = epsData
           .slice()
           // 后来发现会有 2 的情况, 是 OP 或 ED, 暂时排除掉
           .filter(item => item.type === 0 || item.type === 1)
@@ -108,55 +114,58 @@ export default memo(
 
       // SP 可能会占用一格, 若 eps 当中存在 sp, 每组要减 1 项避免换行
       const arrNum = numbersOfLine * lines - (lines <= 3 ? 0 : advance && hasSp ? 1 : 0)
-      return arrGroup(_eps, arrNum)
+      return arrGroup(epsData, arrNum)
     }, [eps, numbersOfLine, lines, advance])
 
+    // --- Handlers ---
     const handleLayout = useCallback(
       (event: LayoutChangeEvent) => {
         if (layoutWidth) return
 
-        const { width } = event.nativeEvent.layout
+        const { width: layoutWidthVal } = event.nativeEvent.layout
         postTask(() => {
-          setWidth(width - marginRight)
+          setWidth(layoutWidthVal - marginRight)
         }, 0)
       },
-
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [orientation, layoutWidth, marginRight]
     )
 
-    if (!pages.length) return null
+    // --- Render ---
+    if (!memoPages.length) return null
 
     const mounted = width !== 0
     const layoutStyle = mounted
       ? [
           style,
           {
-            marginRight: -btnStyle.margin
+            marginRight: -memoBtnStyle.margin
           }
         ]
       : undefined
+
     if (pagination) {
       return (
         <View style={layoutStyle} onLayout={handleLayout}>
           {mounted ? (
-            pages.length <= 1 ? (
-              <NormalButtons props={passProps} eps={pages[0]} />
+            memoPages.length <= 1 ? (
+              <NormalButtons props={memoPassProps} eps={memoPages[0]} />
             ) : (
-              <Carousel props={passProps} epsGroup={pages} />
+              <Carousel props={memoPassProps} epsGroup={memoPages} />
             )
           ) : null}
         </View>
       )
     }
 
-    const { margin } = btnStyle
+    const { margin } = memoBtnStyle
     const marginStyle = {
       marginBottom: margin ? -margin : 0 // 抵消最后一行的 marginBottom
     }
+
     return (
       <View style={[layoutStyle, marginStyle]} onLayout={handleLayout}>
-        {mounted && <NormalButtons props={passProps} eps={pages[0]} />}
+        {mounted && <NormalButtons props={memoPassProps} eps={memoPages[0]} />}
       </View>
     )
   },

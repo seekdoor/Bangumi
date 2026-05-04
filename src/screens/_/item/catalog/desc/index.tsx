@@ -5,19 +5,19 @@
  * @Last Modified time: 2026-04-11 05:28:36
  */
 import React from 'react'
-import { View } from 'react-native'
 import { observer } from 'mobx-react'
 import { Avatar, Flex, Text, UserStatus } from '@components'
+import { InView } from '@_/base'
 import { _ } from '@stores'
 import { useNavigation } from '@utils/hooks'
-import { AVATAR_WIDTH } from '../ds'
+import { AVATAR_WIDTH, ITEM_HEIGHT } from '../ds'
 
-function Desc({ userId, avatar, name, date, event }) {
+function Desc({ index, userId, avatar, name, date, event }) {
   const navigation = useNavigation()
 
   return (
     <Flex style={_.mt.md}>
-      <View style={_.mr.sm}>
+      <InView style={_.mr.sm} y={InView.y(index - 1, ITEM_HEIGHT, ITEM_HEIGHT / 2)}>
         <UserStatus userId={userId} mini>
           <Avatar
             key={avatar}
@@ -30,7 +30,8 @@ function Desc({ userId, avatar, name, date, event }) {
             event={event}
           />
         </UserStatus>
-      </View>
+      </InView>
+
       <Flex.Item>
         {!!name && (
           <Text size={12} bold numberOfLines={1}>

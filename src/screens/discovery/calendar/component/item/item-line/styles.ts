@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2022-07-25 22:05:39
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-03-21 16:31:37
+ * @Last Modified time: 2026-04-30 05:47:52
  */
 import { _ } from '@stores'
 import { COVER_HEIGHT, COVER_WIDTH } from '../../../ds'
@@ -39,6 +39,6 @@ export const memoStyles = _.memoStyles(() => ({
   },
   desc: {
     marginTop: -6,
-    marginRight: -20
+    marginRight: -36
   }
 }))

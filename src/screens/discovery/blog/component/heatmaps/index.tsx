@@ -2,20 +2,20 @@
  * @Author: czy0729
  * @Date: 2022-01-06 07:42:44
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-01-02 20:59:19
+ * @Last Modified time: 2026-04-30 04:32:55
  */
 import React from 'react'
+import { observer } from 'mobx-react'
 import { Heatmap } from '@components'
 import { _ } from '@stores'
 import { r } from '@utils/dev'
-import { useObserver } from '@utils/hooks'
 import { TABS_HEADER_HEIGHT } from '@styles'
 import { COMPONENT } from './ds'
 
 function Heatmaps() {
   r(COMPONENT)
 
-  return useObserver(() => (
+  return (
     <>
       <Heatmap
         right={_.wind + 62}
@@ -30,7 +30,7 @@ function Heatmaps() {
         transparent
       />
     </>
-  ))
+  )
 }
 
-export default Heatmaps
+export default observer(Heatmaps)

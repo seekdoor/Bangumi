@@ -20,15 +20,15 @@ export const COMPONENT = 'Anime'
 
 export const ADVANCE_LIMIT = 80
 
-// 类型分组
+/** 类型分组 */
 const ANIME_TAGS_GROUP = [[], []]
 ANIME_TAGS.forEach((item, index) => ANIME_TAGS_GROUP[index % 2 ? 1 : 0].push(item))
 
-// 制作分组
+/** 制作分组 */
 const ANIME_OFFICIAL_GROUP = [[], []]
 ANIME_OFFICIAL.forEach((item, index) => ANIME_OFFICIAL_GROUP[index % 2 ? 1 : 0].push(item))
 
-export const filterDS = [
+export const FILTER_DS = [
   {
     title: '地区',
     type: 'area',

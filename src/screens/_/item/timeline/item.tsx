@@ -160,15 +160,17 @@ const Item = memo(
                 />
               </View>
 
-              <InView key={index} y={y}>
-                <Images
-                  type={type}
-                  image={image}
-                  p3Text={p3Text}
-                  p3Url={p3Url}
-                  onNavigate={handleNavigate}
-                />
-              </InView>
+              {image.length > 1 && (
+                <InView key={index} y={y}>
+                  <Images
+                    type={type}
+                    image={image}
+                    p3Text={p3Text}
+                    p3Url={p3Url}
+                    onNavigate={handleNavigate}
+                  />
+                </InView>
+              )}
 
               <Likes
                 style={styles.likes}

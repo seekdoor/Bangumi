@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2022-07-27 05:22:18
  * @Last Modified by: czy0729
- * @Last Modified time: 2025-12-21 22:48:03
+ * @Last Modified time: 2026-04-30 05:29:33
  */
 import React, { useMemo } from 'react'
 import { observer } from 'mobx-react'
@@ -18,11 +18,14 @@ import type { Ctx } from '../../types'
 function List() {
   const { $ } = useStore<Ctx>(COMPONENT)
 
-  const elToolBar = useMemo(() => <ToolBar />, [])
-
+  // --- Data Logic ---
   const { layout, fixed } = $.state
   const numColumns = $.isList ? undefined : _.portrait(3, 5)
 
+  // --- Memos (Elements) ---
+  const elToolBar = useMemo(() => <ToolBar />, [])
+
+  // --- Render ---
   return (
     <>
       {fixed && elToolBar}

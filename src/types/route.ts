@@ -775,6 +775,7 @@ export type RouteShare = (
 export type RouteAward = (
   path: 'Award',
   params: {
+    /** 年鉴网络地址 */
     uri: string
   }
 ) => any

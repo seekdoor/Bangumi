@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2024-05-14 06:11:43
  * @Last Modified by: czy0729
- * @Last Modified time: 2025-05-06 06:50:45
+ * @Last Modified time: 2026-04-30 04:40:00
  */
 import type { TopicId, WithNavigation } from '@types'
 import type Store from './store'
@@ -12,11 +12,13 @@ export type Ctx = WithNavigation<{
   $: InstanceType<typeof Store>
 }>
 
-export type Data = {
+export type DataItem = {
   topicId: TopicId
   title: string
   desc?: string
   cover: string
-}[]
+}
+
+export type Data = DataItem[]
 
 export type Type = (typeof TYPE_DS)[number]

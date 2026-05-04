@@ -15,5 +15,16 @@ export const styles = _.create({
     bottom: 0,
     left: 0,
     pointerEvents: 'none'
+  },
+  visibleBottom: {
+    position: 'absolute',
+    zIndex: 100,
+    top: 36,
+    right: _.sm,
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    backgroundColor: _.colorBid,
+    borderRadius: 4,
+    pointerEvents: 'none'
   }
 })

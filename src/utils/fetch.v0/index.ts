@@ -5,17 +5,30 @@
  * @Author: czy0729
  * @Date: 2022-01-30 22:14:41
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-01-20 08:04:12
+ * @Last Modified time: 2026-05-04 13:28:25
  */
 import dayjs from 'dayjs'
 import { getTimestamp } from '@utils'
 import { API_V0 } from '@constants/api'
 import { syncSystemStore } from '../async'
 import { request } from './utils'
-import { API_COLLECTION, API_COLLECTIONS, API_EPS_COLLECTION, API_ME } from './ds'
+import { API_COLLECTION, API_COLLECTIONS, API_EPS_COLLECTION, API_ME, API_USERS } from './ds'
 
-import type { Subject as BaseSubject, SubjectId, UserId } from '@types'
-import type { Collection, CollectionItem, UserCollection, UserCollectionItem } from './types'
+import type {
+  Subject as BaseSubject,
+  CollectionStatusValue,
+  SubjectId,
+  SubjectType,
+  UserId
+} from '@types'
+import type {
+  Collection,
+  CollectionItem,
+  RequestConfig,
+  UserCollection,
+  UserCollectionItem,
+  Users
+} from './types'
 
 export { request }
 
@@ -78,49 +91,64 @@ export async function fetchSubjectV0(config: { url: string }) {
       name_cn: item.name_cn,
       role_name: item.relation
     }))
+  } catch {}
 
-    return data
-  } catch (error) {
-    return data
-  }
+  return data
 }
 
 /** 获取所有类型的在看收藏 */
-async function fetchCollectionAll(userId: UserId) {
+async function fetchCollectionAll(
+  userId: UserId,
+  includeTypes: SubjectType[] = ['anime', 'book', 'real'],
+  type: CollectionStatusValue = '3',
+  config?: RequestConfig
+) {
   const all: Collection['data'] = []
 
+  let temp: Collection
+
   // 动画请求最多 3 页
-  let collection = await request<Collection>(API_COLLECTIONS(userId, '2'))
-  if (Array.isArray(collection?.data)) all.push(...collection.data)
+  if (includeTypes.includes('anime')) {
+    temp = await request<Collection>(API_COLLECTIONS(userId, '2', 1, 100, type), null, config)
+    if (Array.isArray(temp?.data)) all.push(...temp.data)
 
-  // 高级会员才开放 3 页
-  const systemStore = syncSystemStore()
-  if (systemStore.advance) {
-    if (collection?.total > 100) {
-      collection = await request<Collection>(API_COLLECTIONS(userId, '2', 2))
-      if (Array.isArray(collection?.data)) all.push(...collection.data)
-    }
+    // 高级会员才开放 3 页
+    const systemStore = syncSystemStore()
+    if (systemStore.advance) {
+      if (temp?.total > 100) {
+        temp = await request<Collection>(API_COLLECTIONS(userId, '2', 2, 100, type), null, config)
+        if (Array.isArray(temp?.data)) all.push(...temp.data)
+      }
 
-    if (collection?.total > 200) {
-      collection = await request<Collection>(API_COLLECTIONS(userId, '2', 3))
-      if (Array.isArray(collection?.data)) all.push(...collection.data)
+      if (temp?.total > 200) {
+        temp = await request<Collection>(API_COLLECTIONS(userId, '2', 3, 100, type), null, config)
+        if (Array.isArray(temp?.data)) all.push(...temp.data)
+      }
     }
   }
 
   // 书籍 1 页
-  collection = await request<Collection>(API_COLLECTIONS(userId, '1'))
-  if (Array.isArray(collection?.data)) all.push(...collection.data)
+  if (includeTypes.includes('book')) {
+    temp = await request<Collection>(API_COLLECTIONS(userId, '1', 1, 100, type), null, config)
+    if (Array.isArray(temp?.data)) all.push(...temp.data)
+  }
 
   // 三次元 1 页
-  collection = await request<Collection>(API_COLLECTIONS(userId, '6'))
-  if (Array.isArray(collection?.data)) all.push(...collection.data)
+  if (includeTypes.includes('real')) {
+    temp = await request<Collection>(API_COLLECTIONS(userId, '6', 1, 100, type), null, config)
+    if (Array.isArray(temp?.data)) all.push(...temp.data)
+  }
 
   return all
 }
 
-/** 获取在看收藏 */
-export async function fetchCollectionV0(args: { userId: UserId }): Promise<UserCollection> {
-  const { userId } = args || {}
+/** 获取用户 [在看] 收藏 */
+export async function fetchCollectionV0(
+  userId: UserId,
+  includeTypes: SubjectType[] = ['anime', 'book', 'real'],
+  type: CollectionStatusValue = '3',
+  config?: RequestConfig
+): Promise<UserCollection> {
   const data: UserCollection = {
     list: [],
     pagination: {
@@ -131,9 +159,7 @@ export async function fetchCollectionV0(args: { userId: UserId }): Promise<UserC
   }
 
   try {
-    const all = await fetchCollectionAll(userId)
-    // devLog(`fetchv0 | all.length: ${all.length}`)
-
+    const all = await fetchCollectionAll(userId, includeTypes, type, config)
     if (all.length) {
       all.forEach((_item, index) => {
         const cItem = all[index]
@@ -160,85 +186,17 @@ export async function fetchCollectionV0(args: { userId: UserId }): Promise<UserC
           subject
         })
       })
-
-      // const fetchs = []
-      // const cache = await get('collectionSubject')
-      // all.forEach((item, index) => {
-      //   fetchs.push(async () => {
-      //     const cItem = all[index]
-
-      //     // 有缓存就不请求
-      //     if (cache[item.subject_id]) {
-      //       const subject = cache[item.subject_id]
-      //       data.list.push({
-      //         name: subject.name_cn || subject.name,
-      //         subject_id: subject.id,
-      //         ep_status: cItem.ep_status,
-      //         vol_status: cItem.vol_status,
-      //         lasttouch: dayjs(cItem.updated_at).valueOf() / 1000,
-      //         subject: omit(subject, ['_loaded'])
-      //       })
-      //     } else {
-      //       const subject = await request<Subject>(
-      //         `${API_V0}/subjects/${item.subject_id}`
-      //       )
-      //       devLog(`fetchv0 | fetch subject: ${item.subject_id}`)
-
-      //       if (subject?.id) {
-      //         const _subject: BaseSubject = {
-      //           id: subject.id,
-      //           url: `//lain.bgm.tv/subject/${subject.id}`,
-      //           type: cItem.subject_type,
-      //           name: subject.name,
-      //           name_cn: subject.name_cn,
-      //           summary: '',
-      //           eps: subject.eps,
-      //           eps_count: subject.total_episodes,
-      //           air_date: subject.date,
-      //           air_weekday: dayjs(subject.date).day() || 0,
-      //           images: subject.images,
-      //           collection: subject.collection
-      //         }
-
-      //         // 缓存条目结果
-      //         cache[item.subject_id] = {
-      //           ..._subject,
-      //           _loaded: getTimestamp()
-      //         }
-      //         data.list.push({
-      //           name: _subject.name_cn || _subject.name,
-      //           subject_id: _subject.id,
-      //           ep_status: cItem.ep_status,
-      //           vol_status: cItem.vol_status,
-      //           lasttouch: dayjs(cItem.updated_at).valueOf() / 1000,
-      //           subject: _subject
-      //         })
-      //         return true
-      //       } else {
-      //         devLog(`fetchv0 | no subject id: ${item.subject_id}`)
-      //       }
-      //     }
-
-      //     return false
-      //   })
-      // })
-
-      // devLog(`fetchv0 | fetch subjects: ${fetchs.length}`)
-      // await queue(fetchs)
-      // set('collectionSubject', cache)
     }
-    return data
-  } catch (error) {
-    return data
-  }
+  } catch {}
+
+  return data
 }
 
-/** 获取在看收藏 */
-export async function fetchCollectionSingleV0(args: {
+/** 获取用户单个条目收藏信息 */
+export async function fetchCollectionSingleV0(
+  userId: UserId,
   subjectId: SubjectId
-  userId: UserId
-}): Promise<UserCollectionItem> {
-  const { subjectId, userId } = args || {}
+): Promise<UserCollectionItem> {
   try {
     const cItem = await request<CollectionItem>(API_COLLECTION(userId, subjectId))
     const subject: BaseSubject = {
@@ -265,26 +223,34 @@ export async function fetchCollectionSingleV0(args: {
       lasttouch: dayjs(cItem.updated_at).valueOf() / 1000,
       subject
     }
-  } catch (error) {
+  } catch {
     return null
   }
 }
 
-/** 获取登录用户信息 */
+/** 获取用户信息 (需登录) */
 export async function fetchMeV0() {
   try {
     return request(API_ME())
-  } catch (error) {
+  } catch {
     return null
   }
 }
 
-/** 获取登录用户条目章节收藏状态 */
-export async function fetchUserProgressV0(args: { subjectId: SubjectId }) {
-  const { subjectId } = args || {}
+/** 获取用户条目章节收藏状态 (需登录) */
+export async function fetchUserProgressV0(subjectId: SubjectId) {
   try {
     return request(API_EPS_COLLECTION(subjectId))
-  } catch (error) {
+  } catch {
+    return null
+  }
+}
+
+/** 获取用户信息 */
+export async function fetchUsersV0(userId: UserId, config?: RequestConfig) {
+  try {
+    return request<Users>(API_USERS(userId), null, config)
+  } catch {
     return null
   }
 }

@@ -7,7 +7,7 @@
 import { LIST_EMPTY, MODEL_TIMELINE_SCOPE, MODEL_TIMELINE_TYPE } from '@constants'
 
 import type { TimeLineScope, TimeLineType, UserId } from '@types'
-import type { CollectionsTimeline } from './types'
+import type { CollectionsTimeline, CollectionTimelines } from './types'
 
 export const NAMESPACE = 'Timeline'
 
@@ -54,7 +54,10 @@ export const STATE = {
   hidden: {},
 
   /** 用户最后活跃时间 */
-  active: {} as Record<UserId, number>
+  active: {} as Record<UserId, number>,
+
+  /** 用户的追踪收藏时间线 */
+  collectionTimelines: {} as Record<UserId, CollectionTimelines>
 }
 
 export const LOADED = {
@@ -62,5 +65,6 @@ export const LOADED = {
   hidden: false,
   likes: false,
   say: false,
-  active: false
+  active: false,
+  collectionTimelines: false
 }

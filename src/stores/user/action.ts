@@ -133,10 +133,7 @@ export default class Action extends Fetch {
     )
     if (index !== -1) return false
 
-    const data = await fetchCollectionSingleV0({
-      userId: this.myId,
-      subjectId
-    })
+    const data = await fetchCollectionSingleV0(this.myId, subjectId)
     if (!data) return false
 
     const collection = toJS(this.collection)

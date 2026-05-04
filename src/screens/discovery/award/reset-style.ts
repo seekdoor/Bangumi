@@ -3,23 +3,26 @@
  * @Author: czy0729
  * @Date: 2019-08-18 22:44:40
  * @Last Modified by: czy0729
- * @Last Modified time: 2024-02-12 03:56:18
+ * @Last Modified time: 2026-04-30 00:34:06
  */
 const W_SUBJECT = '30vw'
+
 const W_SUBJECT_SM = '28vw'
+
 const W_MONO = '20vw'
+
 const H_MONO = `${20 * 1.32}vw`
 
-/** 样式遍历加上important */
+/** 样式遍历加上 important */
 function important(style: string) {
   return style.replace(/;/g, ' !important;')
 }
 
 /**
- * 为了美观
- *  - 1. 修改条目宽度, 每行达到3个
- *  - 2. 修改人物宽度, 每行达到4个
- *  - 3. 隐藏部分样式, 使页面更沉浸
+ * 为了美观，对移动端适配弱的年代的年鉴进行强制修改
+ *  - 修改条目宽度, 每行达到 3 个
+ *  - 修改人物宽度, 每行达到 4 个
+ *  - 隐藏无意义样式, 使页面更沉浸
  */
 export default {
   2023: important(`

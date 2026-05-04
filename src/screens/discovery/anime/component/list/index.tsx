@@ -18,9 +18,12 @@ import type { Ctx } from '../../types'
 function List() {
   const { $ } = useStore<Ctx>(COMPONENT)
 
+  // --- Memos (Elements) ---
   const elFilter = useMemo(() => <Filter />, [])
 
-  if (!$.state._loaded && !$.state.data._loaded) {
+  // --- Render ---
+  const { _loaded, data } = $.state
+  if (!_loaded && !data._loaded) {
     return (
       <>
         {elFilter}
@@ -30,10 +33,11 @@ function List() {
   }
 
   const numColumns = $.isList ? undefined : _.portrait(3, 5)
+  const key = `${$.state.layout}${numColumns}`
 
   return (
     <PaginationList2
-      key={`${$.state.layout}${numColumns}`}
+      key={key}
       keyExtractor={keyExtractor}
       forwardRef={$.forwardRef}
       contentContainerStyle={_.container.bottom}

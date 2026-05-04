@@ -41,10 +41,16 @@ export const APP_USERID_IOS_AUTH = 700939
 export const APP_ADVANCE_CDN = 10
 
 /** 普通会员特别关注条目吐槽用户最大数 */
-export const APP_FREE_TRACK_COLLECTION = 1
+export const APP_FREE_TRACK_COLLECTION = 2
+
+/** 普通会员特别关注用户收藏时间线最大数 */
+export const APP_FREE_TRACK_COLLECTION_TIMELINES = 2
 
 /** 高级会员特别关注条目吐槽用户最大数 */
 export const APP_ADVANCE_TRACK_COLLECTION = 5
+
+/** 高级会员特别关注用户收藏时间线最大数 */
+export const APP_ADVANCE_TRACK_COLLECTION_TIMELINES = 5
 
 /** 普通会员特别关注超展开用户最大数 */
 export const APP_FREE_TRACK_COMMENT = 2

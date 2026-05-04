@@ -2,7 +2,7 @@
  * @Author: czy0729
  * @Date: 2022-06-13 10:52:02
  * @Last Modified by: czy0729
- * @Last Modified time: 2026-01-03 06:44:39
+ * @Last Modified time: 2026-04-30 05:02:13
  */
 import type { MutableRefObject } from 'react'
 import type { Text as RNText, TextProps } from 'react-native'
@@ -56,7 +56,7 @@ export type Props = Override<
     lineHeightIncrease?: number
 
     /** 对齐 */
-    align?: 'left' | 'center' | 'right'
+    align?: 'left' | 'center' | 'right' | 'justify'
 
     /** 是否加粗 */
     bold?: boolean

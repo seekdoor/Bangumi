@@ -6,6 +6,7 @@
  */
 import type { ViewProps } from 'react-native'
 import type { DeepPartial, Override } from '@types'
+import type { computeInViewY } from './utils'
 
 export type Props = Override<
   ViewProps,
@@ -16,6 +17,11 @@ export type Props = Override<
     flex?: boolean
   }
 >
+
+export type InViewComponentType = {
+  (props: Props): JSX.Element
+  y: typeof computeInViewY
+}
 
 export type Ctx = DeepPartial<{
   $: {

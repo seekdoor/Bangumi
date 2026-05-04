@@ -21,11 +21,12 @@ function Ep({ index, item }: Props) {
   const navigation = useNavigation(COMPONENT)
 
   const styles = memoStyles()
+
   const { comment } = item
 
   return (
     <Flex style={styles.container} align='start'>
-      <InView style={styles.inView} y={280 + 40 * (index + 1)}>
+      <InView style={styles.inView} y={InView.y(index, 40, 280)}>
         <Cover
           src={item.image}
           size={styles.inView.minWidth}
@@ -40,6 +41,7 @@ function Ep({ index, item }: Props) {
           }}
         />
       </InView>
+
       <Flex.Item style={styles.content}>
         <Touchable
           onPress={() => {
@@ -55,9 +57,11 @@ function Ep({ index, item }: Props) {
             {item.title}
           </Text>
         </Touchable>
+
         <Text style={_.mt.xs} type='sub' size={11} lineHeight={13}>
           {item.info}
         </Text>
+
         {!!comment && (
           <Text
             style={styles.comments}

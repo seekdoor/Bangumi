@@ -21,11 +21,12 @@ function Mono({ index, item }: Props) {
   const navigation = useNavigation(COMPONENT)
 
   const styles = memoStyles()
+
   const { comment } = item
 
   return (
     <Flex style={styles.container} align='start'>
-      <InView style={styles.inView} y={280 + 56 * (index + 1)}>
+      <InView style={styles.inView} y={InView.y(index, 56, 280)}>
         <Avatar
           src={item.image}
           size={styles.inView.minWidth}
@@ -39,13 +40,16 @@ function Mono({ index, item }: Props) {
           }}
         />
       </InView>
+
       <Flex.Item style={styles.content}>
         <Text size={13} bold>
           {item.title}
         </Text>
+
         <Text style={_.mt.xs} type='sub' size={11} lineHeight={13}>
           {item.info}
         </Text>
+
         {!!comment && (
           <Text
             style={styles.comments}
